@@ -41,7 +41,7 @@ To get a local copy up and running, follow these simple steps. Because the entir
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/yourusername/maktaba-arena.git](https://github.com/yourusername/maktaba-arena.git)
+   git clone [https://github.com/mosesoghene/maktaba-arena.git](https://github.com/mosesoghene/maktaba-arena.git)
    cd maktaba-arena
 
    ```
