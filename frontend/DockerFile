@@ -1,0 +1,43 @@
+# ==========================================
+# Stage 1: Development Environment
+# ==========================================
+FROM node:20-alpine AS development
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files and install dependencies
+# Doing this before copying the rest of the code leverages Docker caching
+COPY package*.json ./
+RUN npm install
+
+# Copy the rest of the application code
+COPY . .
+
+# Expose port 3000 (We will configure Vite to use this instead of 5173)
+EXPOSE 3000
+
+# Start the Vite development server
+CMD ["npm", "run", "dev", "--", "--port", "3000", "--host", "0.0.0.0"]
+
+# ==========================================
+# Stage 2: Production Build
+# ==========================================
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+# This compiles the React app into static files in the /dist folder
+RUN npm run build
+
+# ==========================================
+# Stage 3: Production Server (Nginx)
+# ==========================================
+FROM nginx:alpine AS production
+# Copy the built React files to Nginx's web directory
+COPY --from=build /app/dist /usr/share/nginx/html
+# Expose port 80 for standard web traffic
+EXPOSE 80
+# Run Nginx in the foreground
+CMD ["nginx", "-g", "daemon off;"]
