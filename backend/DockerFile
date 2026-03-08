@@ -1,0 +1,24 @@
+# Use an official, lightweight Python image
+FROM python:3.11-slim-bullseye
+
+# Set environment variables to prevent Python from writing .pyc files 
+# and to ensure output is sent straight to the terminal without buffering
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Install system dependencies required for PostgreSQL and general compilation
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the requirements file and install Python dependencies
+# (We copy this first to leverage Docker cache)
+COPY requirements.txt /app/
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+# Copy the rest of the Django project code into the container
+COPY . /app/
