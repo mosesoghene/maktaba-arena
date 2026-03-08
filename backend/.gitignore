@@ -1,0 +1,24 @@
+# Python environment and cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+venv/
+env/
+.Python
+
+# Django specific
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Static & Media files (usually generated/uploaded locally)
+staticfiles/
+static/
+media/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/

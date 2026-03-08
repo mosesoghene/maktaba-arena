@@ -205,3 +205,27 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+
+# General OS files
+.DS_Store
+Thumbs.db
+*~
+
+# Environment variables (Crucial for security)
+.env
+.env.local
+.env.*
+
+# Editor directories and files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Docker
+.docker/
+docker-compose.override.yml
