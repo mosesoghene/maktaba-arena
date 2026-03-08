@@ -1,0 +1,15 @@
+[
+  {
+    "topic": "Basic Algebra",
+    "difficulty": "easy",
+    "question": "What is the value of x if 2x + 6 = 14?",
+    "options": [
+      "2",
+      "4",
+      "6",
+      "8"
+    ],
+    "correct_answer": "4",
+    "explanation": "Subtract 6 from 14 to get 8. Divide 8 by 2 to get x = 4."
+  }
+]
