@@ -10,18 +10,28 @@ It handles both the Player Controller view (mobile-optimized) and the Presenter 
 * **Styling:** Tailwind CSS
 * **Build Tool:** Vite
 
-## Local Development
-This frontend is designed to run via Docker. It automatically connects to the Django backend APIs and WebSocket server.
+## Docker Configuration
 
-Please use the root `docker-compose.yml` to start the frontend service:
+### Development Mode
+To run the frontend in development mode with hot-reloading:
 ```bash
-docker-compose up frontend
+docker build --target development -t maktaba-frontend-dev .
+docker run -p 3000:3000 -v $(pwd):/frontend -v /frontend/node_modules maktaba-frontend-dev
 ```
 
-The app will be available at http://localhost:3000.
-
-## Installing New Packages
-If you need to add a new npm package (e.g., npm install react-use-websocket), you should run the command inside the running container to keep your local machine clean:
+### Production Mode
+To build and run the production-optimized version using Nginx:
 ```bash
-docker-compose exec frontend npm install react-use-websocket
+docker build --target production -t maktaba-frontend-prod .
+docker run -p 80:80 maktaba-frontend-prod
 ```
+
+### Environment Variables
+* `VITE_API_URL`: The URL of the backend API (default: `http://localhost:8000`). This can be configured in `docker-compose.yml`.
+
+### Port Mapping
+* **Development:** Exposes port `3000`.
+* **Production:** Exposes port `80`.
+
+### Hot-Reloading in Docker
+Hot-reloading is enabled via Vite's polling mechanism (`usePolling: true`) in `vite.config.js`. This ensures file changes on the host machine are detected within the container even on systems with limited file event propagation.
