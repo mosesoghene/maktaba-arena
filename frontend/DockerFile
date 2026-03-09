@@ -1,43 +1,57 @@
 # ==========================================
 # Stage 1: Development Environment
 # ==========================================
+# Using Node.js LTS (v20) with Alpine for a minimal footprint
 FROM node:20-alpine AS development
 
-# Set working directory
-WORKDIR /app
+# Set the working directory to /frontend
+WORKDIR /frontend
 
-# Copy package files and install dependencies
-# Doing this before copying the rest of the code leverages Docker caching
+# Copy package.json and package-lock.json first to leverage Docker layer caching
+# This ensures that dependencies are only re-installed if package files change
 COPY package*.json ./
+
+# Install all dependencies including build tools
 RUN npm install
 
-# Copy the rest of the application code
+# Copy the entire project source code
 COPY . .
 
-# Expose port 3000 (We will configure Vite to use this instead of 5173)
+# Expose port 3000 for the development server
 EXPOSE 3000
 
-# Start the Vite development server
+# Start the Vite development server with host binding to 0.0.0.0
+# This is necessary for the server to be accessible from outside the container
 CMD ["npm", "run", "dev", "--", "--port", "3000", "--host", "0.0.0.0"]
 
 # ==========================================
 # Stage 2: Production Build
 # ==========================================
 FROM node:20-alpine AS build
-WORKDIR /app
+
+# Set working directory
+WORKDIR /frontend
+
+# Copy package files and install dependencies
 COPY package*.json ./
 RUN npm install
+
+# Copy source code and build the production version
 COPY . .
-# This compiles the React app into static files in the /dist folder
 RUN npm run build
 
 # ==========================================
 # Stage 3: Production Server (Nginx)
 # ==========================================
+# Using Nginx Alpine for serving static files in production
 FROM nginx:alpine AS production
-# Copy the built React files to Nginx's web directory
-COPY --from=build /app/dist /usr/share/nginx/html
-# Expose port 80 for standard web traffic
+
+# Copy the built files from the build stage to Nginx's web root
+# Vite's default output directory is /dist
+COPY --from=build /frontend/dist /usr/share/nginx/html
+
+# Expose port 80 for production traffic
 EXPOSE 80
+
 # Run Nginx in the foreground
 CMD ["nginx", "-g", "daemon off;"]
