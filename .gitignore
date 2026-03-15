@@ -229,3 +229,5 @@ Thumbs.db
 # Docker
 .docker/
 docker-compose.override.yml
+backend/Pipfile.lock
+backend/Pipfile

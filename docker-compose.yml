@@ -20,6 +20,7 @@ services:
   backend:
     build:
       context: ./backend
+      dockerfile: DockerFile
     container_name: maktaba_backend
     command: >
       sh -c "python manage.py migrate &&
@@ -42,6 +43,7 @@ services:
   frontend:
     build:
       context: ./frontend
+      dockerfile: DockerFile
     container_name: maktaba_frontend
     volumes:
       - ./frontend:/frontend
